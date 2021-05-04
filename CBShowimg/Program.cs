@@ -16,7 +16,7 @@ namespace CBShowimg
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new fmMain());
+            Application.Run(new MainForm());
         }
     }
 }

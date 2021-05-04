@@ -1,7 +1,7 @@
 ﻿
 namespace CBShowimg
 {
-    partial class fmMain
+    partial class MainForm
     {
         /// <summary>
         /// 設計工具所需的變數。
@@ -34,12 +34,12 @@ namespace CBShowimg
             this.btRun = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.lbLineHeads = new System.Windows.Forms.ListBox();
             this.tbDetail = new System.Windows.Forms.TextBox();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.btShowImage = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -74,6 +74,7 @@ namespace CBShowimg
             this.btRun.TabIndex = 2;
             this.btRun.Text = "GO";
             this.btRun.UseVisualStyleBackColor = true;
+            this.btRun.Click += new System.EventHandler(this.btRun_Click);
             // 
             // label1
             // 
@@ -95,7 +96,7 @@ namespace CBShowimg
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.listBox1);
+            this.splitContainer1.Panel1.Controls.Add(this.lbLineHeads);
             // 
             // splitContainer1.Panel2
             // 
@@ -103,56 +104,20 @@ namespace CBShowimg
             this.splitContainer1.Panel2.Controls.Add(this.button4);
             this.splitContainer1.Panel2.Controls.Add(this.button3);
             this.splitContainer1.Panel2.Controls.Add(this.button2);
-            this.splitContainer1.Panel2.Controls.Add(this.button1);
+            this.splitContainer1.Panel2.Controls.Add(this.btShowImage);
             this.splitContainer1.Size = new System.Drawing.Size(450, 366);
             this.splitContainer1.SplitterDistance = 149;
             this.splitContainer1.TabIndex = 4;
             // 
-            // listBox1
+            // lbLineHeads
             // 
-            this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 15;
-            this.listBox1.Location = new System.Drawing.Point(0, 0);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(149, 366);
-            this.listBox1.TabIndex = 0;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(4, 4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(4, 34);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(4, 64);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "button3";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(3, 94);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 3;
-            this.button4.Text = "button4";
-            this.button4.UseVisualStyleBackColor = true;
+            this.lbLineHeads.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbLineHeads.FormattingEnabled = true;
+            this.lbLineHeads.ItemHeight = 15;
+            this.lbLineHeads.Location = new System.Drawing.Point(0, 0);
+            this.lbLineHeads.Name = "lbLineHeads";
+            this.lbLineHeads.Size = new System.Drawing.Size(149, 366);
+            this.lbLineHeads.TabIndex = 0;
             // 
             // tbDetail
             // 
@@ -165,7 +130,44 @@ namespace CBShowimg
             this.tbDetail.Size = new System.Drawing.Size(208, 359);
             this.tbDetail.TabIndex = 4;
             // 
-            // fmMain
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(3, 94);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 3;
+            this.button4.Text = "button4";
+            this.button4.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(4, 64);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 2;
+            this.button3.Text = "button3";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(4, 34);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // btShowImage
+            // 
+            this.btShowImage.Location = new System.Drawing.Point(4, 4);
+            this.btShowImage.Name = "btShowImage";
+            this.btShowImage.Size = new System.Drawing.Size(75, 23);
+            this.btShowImage.TabIndex = 0;
+            this.btShowImage.Text = "秀圖";
+            this.btShowImage.UseVisualStyleBackColor = true;
+            this.btShowImage.Click += new System.EventHandler(this.btShowImage_Click);
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -175,7 +177,7 @@ namespace CBShowimg
             this.Controls.Add(this.btRun);
             this.Controls.Add(this.btSetup);
             this.Controls.Add(this.tbLineHead);
-            this.Name = "fmMain";
+            this.Name = "MainForm";
             this.Text = "CBETA 神秀圖";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -194,12 +196,12 @@ namespace CBShowimg
         private System.Windows.Forms.Button btRun;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox lbLineHeads;
         private System.Windows.Forms.TextBox tbDetail;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btShowImage;
     }
 }
 
