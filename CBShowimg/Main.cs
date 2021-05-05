@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -162,6 +163,45 @@ namespace CBShowimg
             } catch (Exception err) {
                 MessageBox.Show($"出問題了：{err.Message}\n檔案：{XMLFile}");
             }
+        }
+
+        private void MainForm_Activated(object sender, EventArgs e) {
+            // 註冊熱鍵
+            HotKey.RegisterHotKey(Handle, 100, HotKey.KeyModifiers.None, Keys.F7);
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
+            // 取消註冊熱鍵
+            HotKey.UnregisterHotKey(Handle, 100);
+        }
+
+        // 將程式移至前景
+        [DllImport("User32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        // 處理熱鍵需要覆寫 WndProc
+        protected override void WndProc(ref Message m) {
+            const int WM_HOTKEY = 0x0312;
+            switch (m.Msg) {
+                case WM_HOTKEY:
+                    switch (m.WParam.ToInt32()) {
+                        case 100:
+                            SendKeys.Send("^c");
+                            IDataObject data = Clipboard.GetDataObject();
+                            if (data.GetDataPresent(DataFormats.Text)) {
+                                tbLineHead.Text = data.GetData(DataFormats.Text).ToString();
+                                btRun_Click(this, null);
+                                if (WindowState == FormWindowState.Minimized) {
+                                    WindowState = FormWindowState.Normal;
+                                }
+                                SetForegroundWindow(Handle);
+                                //this.TopMost = true;
+                            }
+                            break;
+                    }
+                    break;
+            }
+            base.WndProc(ref m);
         }
     }
 }

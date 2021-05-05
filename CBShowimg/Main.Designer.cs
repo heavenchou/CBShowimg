@@ -53,13 +53,13 @@ namespace CBShowimg
             this.tbLineHead.Location = new System.Drawing.Point(107, 50);
             this.tbLineHead.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tbLineHead.Name = "tbLineHead";
-            this.tbLineHead.Size = new System.Drawing.Size(446, 29);
+            this.tbLineHead.Size = new System.Drawing.Size(538, 29);
             this.tbLineHead.TabIndex = 0;
             // 
             // btSetup
             // 
             this.btSetup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btSetup.Location = new System.Drawing.Point(398, 15);
+            this.btSetup.Location = new System.Drawing.Point(490, 15);
             this.btSetup.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btSetup.Name = "btSetup";
             this.btSetup.Size = new System.Drawing.Size(156, 28);
@@ -71,7 +71,7 @@ namespace CBShowimg
             // btRun
             // 
             this.btRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btRun.Location = new System.Drawing.Point(560, 50);
+            this.btRun.Location = new System.Drawing.Point(652, 50);
             this.btRun.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btRun.Name = "btRun";
             this.btRun.Size = new System.Drawing.Size(44, 28);
@@ -110,8 +110,8 @@ namespace CBShowimg
             this.splitContainer1.Panel2.Controls.Add(this.btCBETAOnline);
             this.splitContainer1.Panel2.Controls.Add(this.btOpenImagePath);
             this.splitContainer1.Panel2.Controls.Add(this.btShowImage);
-            this.splitContainer1.Size = new System.Drawing.Size(587, 352);
-            this.splitContainer1.SplitterDistance = 149;
+            this.splitContainer1.Size = new System.Drawing.Size(679, 352);
+            this.splitContainer1.SplitterDistance = 161;
             this.splitContainer1.TabIndex = 4;
             // 
             // lbLineHeads
@@ -122,7 +122,7 @@ namespace CBShowimg
             this.lbLineHeads.Location = new System.Drawing.Point(0, 0);
             this.lbLineHeads.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.lbLineHeads.Name = "lbLineHeads";
-            this.lbLineHeads.Size = new System.Drawing.Size(149, 352);
+            this.lbLineHeads.Size = new System.Drawing.Size(161, 352);
             this.lbLineHeads.TabIndex = 0;
             this.lbLineHeads.SelectedIndexChanged += new System.EventHandler(this.lbLineHeads_SelectedIndexChanged);
             this.lbLineHeads.DoubleClick += new System.EventHandler(this.lbLineHeads_DoubleClick);
@@ -137,7 +137,7 @@ namespace CBShowimg
             this.tbDetail.Multiline = true;
             this.tbDetail.Name = "tbDetail";
             this.tbDetail.ReadOnly = true;
-            this.tbDetail.Size = new System.Drawing.Size(299, 343);
+            this.tbDetail.Size = new System.Drawing.Size(379, 343);
             this.tbDetail.TabIndex = 4;
             // 
             // btCBETAOnline
@@ -177,7 +177,7 @@ namespace CBShowimg
             // btOpenSetupXML
             // 
             this.btOpenSetupXML.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btOpenSetupXML.Location = new System.Drawing.Point(278, 15);
+            this.btOpenSetupXML.Location = new System.Drawing.Point(370, 15);
             this.btOpenSetupXML.Name = "btOpenSetupXML";
             this.btOpenSetupXML.Size = new System.Drawing.Size(113, 28);
             this.btOpenSetupXML.TabIndex = 5;
@@ -189,7 +189,7 @@ namespace CBShowimg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(618, 453);
+            this.ClientSize = new System.Drawing.Size(710, 453);
             this.Controls.Add(this.btOpenSetupXML);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.label1);
@@ -200,6 +200,8 @@ namespace CBShowimg
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "MainForm";
             this.Text = "CBETA 神秀圖";
+            this.Activated += new System.EventHandler(this.MainForm_Activated);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
