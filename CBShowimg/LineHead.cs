@@ -25,21 +25,17 @@ namespace CBShowimg {
         public CLineHeadItem(string id) {
             ID = id;
         }
-
-        public void AnalysisLineHead() {
-
-        }
     }
 
     public class CLineHead {
-        string ID;          // T
+        public string ID;          // T
         public string Path;        // 圖檔目錄
         public string LineHead;
-        string Vol;
-        string Sutra;       // 經號
-        string Page;           // 頁碼
-        string Field;             // 欄
-        string Line;               // 行
+        public string Vol;
+        public string Sutra;       // 經號
+        public string Page;           // 頁碼
+        public string Field;             // 欄
+        public string Line;               // 行
 
         public CLineHead(string s) {
             LineHead = s;
@@ -59,22 +55,27 @@ namespace CBShowimg {
                 Page = m.Groups[4].Value;
                 Field = m.Groups[5].Value;
                 Line = m.Groups[6].Value;
-                Path = GetPath();
+                SetPath();
             }
         }
 
         // 由行首算出圖檔路徑
-        string GetPath() {
+        public void SetPath() {
+            if(!Option.LineHeadItems.ContainsKey(ID)) {
+                Path = "";
+                return;
+            }
             string path = Option.LineHeadItems[ID].PathRegular;
-            string pageRange = "";  // 130 頁 => 101-200
             string page3 = String.Format("{0:000}", Convert.ToInt32(Page));
-            pageRange = GetPageRange();
+            string page4 = String.Format("{0:0000}", Convert.ToInt32(Page));
+            string pageRange = GetPageRange();      // 130 頁 => 101-200
             path = path.Replace("{id}", ID);
             path = path.Replace("{vol}", Vol);
-            path = path.Replace("{page}", page3);
+            path = path.Replace("{page3}", page3);
+            path = path.Replace("{page4}", page4);
             path = path.Replace("{vol}", Vol);
             path = path.Replace("{pagerange}", pageRange);
-            return path;
+            Path = path;
         }
 
         // 由頁碼算出範圍
@@ -83,7 +84,6 @@ namespace CBShowimg {
             int page = Convert.ToInt32(Page);
             page = (int)((page - 1) / 100) * 100 + 1;
             string pageRange = String.Format("{0:000}-{1:000}", page, page + 99);
-            Console.WriteLine(pageRange);
             return pageRange;
         }
     }

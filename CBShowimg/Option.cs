@@ -15,6 +15,8 @@ namespace CBShowimg
         // 載入 XML
         static public void LoadFromXML(string XMLFile)
         {
+            LineHeadItems.Clear();
+
             // 設定 settings
 
             XmlReaderSettings settings = new XmlReaderSettings();
@@ -51,6 +53,7 @@ namespace CBShowimg
                         break;
                 }
             }
+            reader.Dispose();
         }
     }
 }
