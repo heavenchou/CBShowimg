@@ -24,20 +24,29 @@ namespace CBShowimg
             LoadXMLFile();
         }
 
+        // T01n0001_p0001a01
+        Regex regex = new Regex(@"[A-Z]+\d+n.{5}p.\d{3}[a-z]?(\d{2,3})?");
+        // K0647V17P0815a01
+        Regex regexK = new Regex(@"K\d{4}V\d\dP\d{4}[a-z]?(\d{2,3})?");
+
         // 分析傳 TextBox 上的資料
         private void btRun_Click(object sender, EventArgs e)
         {
             if (tbLineHead.Text == "") return;
-
-            Regex regex = new Regex(@"[A-Z]+\d+n.{5}p.\d{3}[a-z]?(\d{2,3})?");
-
             // 找到的行首資料都放到 LineHeads List 中
             foreach (Match m in regex.Matches(tbLineHead.Text)) {
+                ListBoxAddLineHead(m);
+            }
+            foreach (Match m in regexK.Matches(tbLineHead.Text)) {
+                ListBoxAddLineHead(m);
+            }
+
+            void ListBoxAddLineHead(Match m) {
                 CLineHead item = new CLineHead(m.Value);
                 LineHeads.Add(item);
                 lbLineHeads.Items.Add(item.LineHead);
                 // 有第一筆資料時，設定 selectindex
-                if(LineHeads.Count == 1) {
+                if (LineHeads.Count == 1) {
                     lbLineHeads.SelectedIndex = 0;
                 }
             }
@@ -202,6 +211,12 @@ namespace CBShowimg
                     break;
             }
             base.WndProc(ref m);
+        }
+
+        private void tbLineHead_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Enter) {
+                btRun_Click(sender, null);
+            }
         }
     }
 }

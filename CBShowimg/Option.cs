@@ -11,6 +11,7 @@ namespace CBShowimg
     static public class Option
     {
         static public Dictionary<string, CLineHeadItem> LineHeadItems = new Dictionary<string, CLineHeadItem>();
+        static public string ImageRootPath = "";    // 圖檔的根目錄
 
         // 載入 XML
         static public void LoadFromXML(string XMLFile)
@@ -30,27 +31,31 @@ namespace CBShowimg
             reader.MoveToContent();
             // Parse the file and display each of the nodes.
 
-            string sID = "";
-            string tagName = "";
             while (reader.Read()) {
-                switch (reader.NodeType) {
-                    case XmlNodeType.Element:
-                        tagName = reader.Name;
-                        break;
-                    case XmlNodeType.Text:
-                        switch (tagName) {
-                            case "id": 
-                                sID = reader.Value;
-                                LineHeadItems[sID] = new CLineHeadItem(sID);
-                                break;
-                            case "name": 
-                                LineHeadItems[sID].Name = reader.Value; 
-                                break;
-                            case "path": 
-                                LineHeadItems[sID].PathRegular = reader.Value; 
-                                break;
-                        }
-                        break;
+                if(reader.IsStartElement()) {
+                    switch (reader.Name) {
+                        case "rootpath":
+                            reader.Read();
+                            ImageRootPath = reader.Value;
+                            break;
+                        case "path":
+                            if(reader.HasAttributes) {
+                                // 有 id 屬性
+                                if (reader.MoveToAttribute("id")) {
+                                    string sID = reader.Value;
+                                    LineHeadItems[sID] = new CLineHeadItem(sID);
+                                    // 取得名字
+                                    if (reader.MoveToAttribute("name")) {
+                                        LineHeadItems[sID].Name = reader.Value;
+                                    }
+                                    // 取得目錄
+                                    reader.MoveToElement();
+                                    reader.Read();
+                                    LineHeadItems[sID].PathRegular = reader.Value;
+                                }
+                            }
+                            break;
+                    }
                 }
             }
             reader.Dispose();

@@ -55,6 +55,7 @@ namespace CBShowimg
             this.tbLineHead.Name = "tbLineHead";
             this.tbLineHead.Size = new System.Drawing.Size(538, 29);
             this.tbLineHead.TabIndex = 0;
+            this.tbLineHead.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbLineHead_KeyDown);
             // 
             // btSetup
             // 
