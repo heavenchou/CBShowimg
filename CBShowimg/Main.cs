@@ -228,13 +228,20 @@ namespace CBShowimg
 
         private void MainForm_Activated(object sender, EventArgs e) {
             // 註冊熱鍵
-            HotKey.RegisterHotKey(Handle, 100, HotKey.KeyModifiers.None, Keys.F7);
-            TopMost = true;
+            SetupHotKey();
+
+            Size = new Size(Properties.Settings.Default.FormWidth, Properties.Settings.Default.FormHeight);
+
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
             // 取消註冊熱鍵
-            HotKey.UnregisterHotKey(Handle, 100);
+            DisableHotKey();
+
+            Properties.Settings.Default.FormWidth = Size.Width;
+            Properties.Settings.Default.FormHeight = Size.Height;
+
+            Properties.Settings.Default.Save();
         }
 
         // 將程式移至前景
@@ -305,6 +312,37 @@ namespace CBShowimg
                 lbLineHeads.Items.Clear();
                 LineHeads.Clear();
             }
+        }
+
+        private void cbSetupHotKey_SelectedIndexChanged(object sender, EventArgs e) {
+            // 取消註冊熱鍵
+            DisableHotKey();
+            SetupHotKey();
+        }
+
+        void SetupHotKey() {
+            // 註冊熱鍵
+            Keys hotkey;
+            switch (cbSetupHotKey.Text) {
+                case "F1": hotkey = Keys.F1; break;
+                case "F2": hotkey = Keys.F2; break;
+                case "F3": hotkey = Keys.F3; break;
+                case "F4": hotkey = Keys.F4; break;
+                case "F5": hotkey = Keys.F5; break;
+                case "F6": hotkey = Keys.F6; break;
+                case "F7": hotkey = Keys.F7; break;
+                case "F8": hotkey = Keys.F8; break;
+                case "F9": hotkey = Keys.F9; break;
+                case "F10": hotkey = Keys.F10; break;
+                case "F11": hotkey = Keys.F11; break;
+                case "F12": hotkey = Keys.F12; break;
+                default: hotkey = Keys.F7; break;
+            }
+            HotKey.RegisterHotKey(Handle, 100, HotKey.KeyModifiers.None, hotkey);
+        }
+        void DisableHotKey() {
+            // 取消註冊熱鍵
+            HotKey.UnregisterHotKey(Handle, 100);
         }
     }
 }
