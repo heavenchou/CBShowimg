@@ -28,16 +28,26 @@ namespace CBShowimg
         Regex regex = new Regex(@"[A-Z]+\d+n.{5}p.\d{3}[a-z]?(\d{2,3})?");
         // K0647V17P0815a01
         Regex regexK = new Regex(@"K\d{4}V\d\dP\d{4}[a-z]?(\d{2,3})?");
+        Regex regexCB = new Regex(@"CB\d{5}");
+        Regex regexSDRJ = new Regex(@"((SD)|(RJ))\-[A-F][0-9A-F]{3}");
 
         // 分析傳 TextBox 上的資料
         private void btRun_Click(object sender, EventArgs e)
         {
             if (tbLineHead.Text == "") return;
             // 找到的行首資料都放到 LineHeads List 中
+            // 標準行首
             foreach (Match m in regex.Matches(tbLineHead.Text)) {
                 ListBoxAddLineHead(m);
             }
+            // 舊版高麗藏, K0647V17P0815a01
             foreach (Match m in regexK.Matches(tbLineHead.Text)) {
+                ListBoxAddLineHead(m);
+            }
+            foreach (Match m in regexCB.Matches(tbLineHead.Text)) {
+                ListBoxAddLineHead(m);
+            }
+            foreach (Match m in regexSDRJ.Matches(tbLineHead.Text)) {
                 ListBoxAddLineHead(m);
             }
 
@@ -61,27 +71,63 @@ namespace CBShowimg
             if (Option.LineHeadItems.ContainsKey(LineHeads[i].ID)) {
                 sutraName = Option.LineHeadItems[LineHeads[i].ID].Name;
             }
+            if (LineHeads[i].Type == ItemType.Tripitaka) {
+                string message = $"行首：{LineHeads[i].LineHead}\r\n\r\n";
+                message += $"藏經：{LineHeads[i].ID} ({sutraName})\r\n";
+                message += $"冊數：{LineHeads[i].Vol}\r\n";
+                message += $"經號：{LineHeads[i].Sutra.Replace("_", "")}\r\n";
+                message += $"頁數：{LineHeads[i].Page}\r\n";
+                message += $"欄位：{LineHeads[i].Field}\r\n";
+                message += $"行數：{LineHeads[i].Line}\r\n\r\n";
+                message += $"圖檔：\r\n{LineHeads[i].Path}\r\n\r\n";
+                message += $"Online網址：\r\nhttps://cbetaonline.dila.edu.tw/{LineHeads[i].LineHead}";
+                tbDetail.Text = message;
+            } else if(LineHeads[i].Type == ItemType.Gaiji) {
+                string message = "";
+                switch(LineHeads[i].ID) {
+                    case "CB":
+                        message = "缺字"; break;
+                    case "SD":
+                        message = "悉曇"; break;
+                    case "RJ":
+                        message = "蘭扎"; break;
+                }
+                message += $"：{LineHeads[i].LineHead}\r\n\r\n";
+                message += $"圖檔：\r\n{LineHeads[i].Path}\r\n\r\n";
+                if (LineHeads[i].ID == "CB") {
+                    message += $"缺字網址：\r\nhttps://dict.cbeta.org/word/search.php?op=search&cb={LineHeads[i].Num}";
+                }
+                tbDetail.Text = message;
+            }
+            ChangeButtonState(i);   // 改變按鈕的情況
+        }
 
-            string message = $"行首：{LineHeads[i].LineHead}\r\n\r\n";
-            message += $"藏經：{LineHeads[i].ID} ({sutraName})\r\n";
-            message += $"冊數：{LineHeads[i].Vol}\r\n";
-            message += $"經號：{LineHeads[i].Sutra.Replace("_", "")}\r\n";
-            message += $"頁數：{LineHeads[i].Page}\r\n";
-            message += $"欄位：{LineHeads[i].Field}\r\n";
-            message += $"行數：{LineHeads[i].Line}\r\n\r\n";
-            message += $"圖檔：\r\n{LineHeads[i].Path}\r\n\r\n";
-            message += $"Online網址：\r\nhttps://cbetaonline.dila.edu.tw/{LineHeads[i].LineHead}";
-            tbDetail.Text = message;
+        // 改變按鈕的情況
+        void ChangeButtonState(int i) {
+            if(LineHeads[i].Type == ItemType.Tripitaka) {
+                btWebSite.Enabled = true;
+                btWebSite.Text = "CBETAOnline";
+            } else if (LineHeads[i].ID == "CB") {
+                btWebSite.Enabled = true;
+                btWebSite.Text = "CBETA Dict";
+            } else {
+                btWebSite.Enabled = false;
+                btWebSite.Text = "...";
+            }
         }
 
         // 秀圖
         private void btShowImage_Click(object sender, EventArgs e) {
+            ShowImage();
+        }
+
+        void ShowImage() {
             if (lbLineHeads.Items.Count == 0) {
                 MessageBox.Show("左邊沒有資料");
                 return;
             }
             int i = lbLineHeads.SelectedIndex;
-            if(i == -1) {
+            if (i == -1) {
                 i = 0;
                 lbLineHeads.SelectedIndex = 0;
             }
@@ -122,7 +168,7 @@ namespace CBShowimg
         }
         // 開啟 CBETAOnline
         // https://cbetaonline.dila.edu.tw/T01n0001_p0001a01
-        private void btCBETAOnline_Click(object sender, EventArgs e) {
+        private void btWebSite_Click(object sender, EventArgs e) {
             if (lbLineHeads.Items.Count == 0) {
                 MessageBox.Show("左邊沒有資料");
                 return;
@@ -132,8 +178,14 @@ namespace CBShowimg
                 i = 0;
                 lbLineHeads.SelectedIndex = 0;
             }
-            
-            string url = "https://cbetaonline.dila.edu.tw/" + LineHeads[i].LineHead;
+
+            string url = "";
+            if (LineHeads[i].Type == ItemType.Tripitaka) {
+                url = $"https://cbetaonline.dila.edu.tw/{LineHeads[i].LineHead}";
+            } else if(LineHeads[i].ID == "CB") {
+                url = $"https://dict.cbeta.org/word/search.php?op=search&cb={LineHeads[i].Num}";
+            }
+
             try {
                 Process.Start(url);
             } catch (Exception err) {
@@ -154,7 +206,7 @@ namespace CBShowimg
 
         void LoadXMLFile() {
             string XMLFile = System.Windows.Forms.Application.StartupPath;
-            XMLFile += "\\setup.xml";
+            XMLFile += "\\CBShowimg.xml";
             Option.LoadFromXML(XMLFile);
         }
 
@@ -166,7 +218,7 @@ namespace CBShowimg
         private void btOpenSetupXML_Click(object sender, EventArgs e) {
 
             string XMLFile = System.Windows.Forms.Application.StartupPath;
-            XMLFile += "\\setup.xml";
+            XMLFile += "\\CBShowimg.xml";
             try {
                 Process.Start(XMLFile);
             } catch (Exception err) {
@@ -177,6 +229,7 @@ namespace CBShowimg
         private void MainForm_Activated(object sender, EventArgs e) {
             // 註冊熱鍵
             HotKey.RegisterHotKey(Handle, 100, HotKey.KeyModifiers.None, Keys.F7);
+            TopMost = true;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
@@ -216,6 +269,41 @@ namespace CBShowimg
         private void tbLineHead_KeyDown(object sender, KeyEventArgs e) {
             if (e.KeyCode == Keys.Enter) {
                 btRun_Click(sender, null);
+            }
+        }
+
+        private void lbLineHeads_KeyDown(object sender, KeyEventArgs e) {
+            if(e.KeyCode == Keys.Enter) {
+                ShowImage();
+            } else if(e.KeyCode == Keys.Delete) {
+                ListBoxRemoveItem();
+            }
+        }
+
+        // 移除左邊 ListBox 所在的那一筆
+        void ListBoxRemoveItem() {
+            int i = lbLineHeads.SelectedIndex;
+            if (i == -1) {
+                return;
+            }
+            lbLineHeads.Items.RemoveAt(i);
+            LineHeads.RemoveAt(i);
+
+            if(lbLineHeads.Items.Count == 0) {
+                return;
+            }
+            if(i<lbLineHeads.Items.Count) {
+                lbLineHeads.SelectedIndex = i;
+            } else {
+                lbLineHeads.SelectedIndex = i - 1;
+            }
+        }
+
+        private void btListBoxRemoveAll_Click(object sender, EventArgs e) {
+            DialogResult result = MessageBox.Show("確定清空左邊視窗嗎？", "清空視窗", MessageBoxButtons.YesNo);
+            if(result == DialogResult.Yes) {
+                lbLineHeads.Items.Clear();
+                LineHeads.Clear();
             }
         }
     }

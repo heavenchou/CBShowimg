@@ -36,10 +36,12 @@ namespace CBShowimg
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lbLineHeads = new System.Windows.Forms.ListBox();
             this.tbDetail = new System.Windows.Forms.TextBox();
-            this.btCBETAOnline = new System.Windows.Forms.Button();
+            this.btWebSite = new System.Windows.Forms.Button();
             this.btOpenImagePath = new System.Windows.Forms.Button();
             this.btShowImage = new System.Windows.Forms.Button();
             this.btOpenSetupXML = new System.Windows.Forms.Button();
+            this.btListBoxRemoveAll = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -64,7 +66,7 @@ namespace CBShowimg
             this.btSetup.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btSetup.Name = "btSetup";
             this.btSetup.Size = new System.Drawing.Size(156, 28);
-            this.btSetup.TabIndex = 1;
+            this.btSetup.TabIndex = 9;
             this.btSetup.Text = "重新載入設定檔";
             this.btSetup.UseVisualStyleBackColor = true;
             this.btSetup.Click += new System.EventHandler(this.btSetup_Click);
@@ -75,8 +77,8 @@ namespace CBShowimg
             this.btRun.Location = new System.Drawing.Point(652, 50);
             this.btRun.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btRun.Name = "btRun";
-            this.btRun.Size = new System.Drawing.Size(44, 28);
-            this.btRun.TabIndex = 2;
+            this.btRun.Size = new System.Drawing.Size(44, 29);
+            this.btRun.TabIndex = 1;
             this.btRun.Text = "GO";
             this.btRun.UseVisualStyleBackColor = true;
             this.btRun.Click += new System.EventHandler(this.btRun_Click);
@@ -107,8 +109,9 @@ namespace CBShowimg
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.btListBoxRemoveAll);
             this.splitContainer1.Panel2.Controls.Add(this.tbDetail);
-            this.splitContainer1.Panel2.Controls.Add(this.btCBETAOnline);
+            this.splitContainer1.Panel2.Controls.Add(this.btWebSite);
             this.splitContainer1.Panel2.Controls.Add(this.btOpenImagePath);
             this.splitContainer1.Panel2.Controls.Add(this.btShowImage);
             this.splitContainer1.Size = new System.Drawing.Size(679, 352);
@@ -124,42 +127,43 @@ namespace CBShowimg
             this.lbLineHeads.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.lbLineHeads.Name = "lbLineHeads";
             this.lbLineHeads.Size = new System.Drawing.Size(161, 352);
-            this.lbLineHeads.TabIndex = 0;
+            this.lbLineHeads.TabIndex = 2;
             this.lbLineHeads.SelectedIndexChanged += new System.EventHandler(this.lbLineHeads_SelectedIndexChanged);
             this.lbLineHeads.DoubleClick += new System.EventHandler(this.lbLineHeads_DoubleClick);
+            this.lbLineHeads.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbLineHeads_KeyDown);
             // 
             // tbDetail
             // 
             this.tbDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbDetail.Location = new System.Drawing.Point(131, 4);
+            this.tbDetail.Location = new System.Drawing.Point(143, 4);
             this.tbDetail.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tbDetail.Multiline = true;
             this.tbDetail.Name = "tbDetail";
             this.tbDetail.ReadOnly = true;
-            this.tbDetail.Size = new System.Drawing.Size(379, 343);
-            this.tbDetail.TabIndex = 4;
+            this.tbDetail.Size = new System.Drawing.Size(367, 343);
+            this.tbDetail.TabIndex = 7;
             // 
-            // btCBETAOnline
+            // btWebSite
             // 
-            this.btCBETAOnline.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btCBETAOnline.Location = new System.Drawing.Point(4, 76);
-            this.btCBETAOnline.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.btCBETAOnline.Name = "btCBETAOnline";
-            this.btCBETAOnline.Size = new System.Drawing.Size(119, 28);
-            this.btCBETAOnline.TabIndex = 2;
-            this.btCBETAOnline.Text = "CBETAOnline";
-            this.btCBETAOnline.UseVisualStyleBackColor = true;
-            this.btCBETAOnline.Click += new System.EventHandler(this.btCBETAOnline_Click);
+            this.btWebSite.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.btWebSite.Location = new System.Drawing.Point(4, 76);
+            this.btWebSite.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.btWebSite.Name = "btWebSite";
+            this.btWebSite.Size = new System.Drawing.Size(131, 28);
+            this.btWebSite.TabIndex = 5;
+            this.btWebSite.Text = "CBETAOnline";
+            this.btWebSite.UseVisualStyleBackColor = true;
+            this.btWebSite.Click += new System.EventHandler(this.btWebSite_Click);
             // 
             // btOpenImagePath
             // 
             this.btOpenImagePath.Location = new System.Drawing.Point(4, 40);
             this.btOpenImagePath.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btOpenImagePath.Name = "btOpenImagePath";
-            this.btOpenImagePath.Size = new System.Drawing.Size(121, 28);
-            this.btOpenImagePath.TabIndex = 1;
+            this.btOpenImagePath.Size = new System.Drawing.Size(131, 28);
+            this.btOpenImagePath.TabIndex = 4;
             this.btOpenImagePath.Text = "開啟圖檔目錄";
             this.btOpenImagePath.UseVisualStyleBackColor = true;
             this.btOpenImagePath.Click += new System.EventHandler(this.btOpenImagePath_Click);
@@ -169,8 +173,8 @@ namespace CBShowimg
             this.btShowImage.Location = new System.Drawing.Point(4, 4);
             this.btShowImage.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btShowImage.Name = "btShowImage";
-            this.btShowImage.Size = new System.Drawing.Size(119, 28);
-            this.btShowImage.TabIndex = 0;
+            this.btShowImage.Size = new System.Drawing.Size(131, 28);
+            this.btShowImage.TabIndex = 3;
             this.btShowImage.Text = "開啟圖檔";
             this.btShowImage.UseVisualStyleBackColor = true;
             this.btShowImage.Click += new System.EventHandler(this.btShowImage_Click);
@@ -181,16 +185,39 @@ namespace CBShowimg
             this.btOpenSetupXML.Location = new System.Drawing.Point(370, 15);
             this.btOpenSetupXML.Name = "btOpenSetupXML";
             this.btOpenSetupXML.Size = new System.Drawing.Size(113, 28);
-            this.btOpenSetupXML.TabIndex = 5;
+            this.btOpenSetupXML.TabIndex = 8;
             this.btOpenSetupXML.Text = "開啟設定檔";
             this.btOpenSetupXML.UseVisualStyleBackColor = true;
             this.btOpenSetupXML.Click += new System.EventHandler(this.btOpenSetupXML_Click);
+            // 
+            // btListBoxRemoveAll
+            // 
+            this.btListBoxRemoveAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btListBoxRemoveAll.Location = new System.Drawing.Point(4, 319);
+            this.btListBoxRemoveAll.Name = "btListBoxRemoveAll";
+            this.btListBoxRemoveAll.Size = new System.Drawing.Size(131, 28);
+            this.btListBoxRemoveAll.TabIndex = 6;
+            this.btListBoxRemoveAll.Text = "左邊清空";
+            this.btListBoxRemoveAll.UseVisualStyleBackColor = true;
+            this.btListBoxRemoveAll.Click += new System.EventHandler(this.btListBoxRemoveAll_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("微軟正黑體", 19.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label2.ForeColor = System.Drawing.Color.Green;
+            this.label2.Location = new System.Drawing.Point(18, 3);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(238, 43);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "CBETA 神秀圖";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(710, 453);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.btOpenSetupXML);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.label1);
@@ -222,10 +249,12 @@ namespace CBShowimg
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ListBox lbLineHeads;
         private System.Windows.Forms.TextBox tbDetail;
-        private System.Windows.Forms.Button btCBETAOnline;
+        private System.Windows.Forms.Button btWebSite;
         private System.Windows.Forms.Button btOpenImagePath;
         private System.Windows.Forms.Button btShowImage;
         private System.Windows.Forms.Button btOpenSetupXML;
+        private System.Windows.Forms.Button btListBoxRemoveAll;
+        private System.Windows.Forms.Label label2;
     }
 }
 
