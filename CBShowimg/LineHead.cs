@@ -38,12 +38,12 @@ namespace CBShowimg {
         public string Field;       // 欄
         public string Line;        // 行
         public string Num;         // CB, SD, RJ 的 4~5 碼
+        public string OnlineUrl = "";    // cbetaonline 的網址, 通常為行首資訊
 
-        public CLineHead(string s) {
-            LineHead = s;
-            AnalysisLineHead();
-        }
-
+        // T01,p.1
+        Regex regexIDVP = new Regex(@"(?<id>[A-Z]+)(?<vol>\d+)[,\.\s]*p[p,\.\s]*(?<page>[a-z]?\d+)(?<field>[a-z]?)(?<line>\d{2,3})?");
+        // T01, no. 1, p. 1a5-7
+        Regex regexCopy = new Regex(@"(?<id>[A-Z]+)(?<vol>\d+),\s*no\.\s*(?<sutra>.*?),\s*pp?\.\s*(?<page>[a-z]?\d+)(?<field>[a-z]?)(?<line>\d{2,3})?");
         // T01n0001_p0001a01
         Regex regex = new Regex(@"(?<id>[A-Z]+)(?<vol>\d+)n(?<sutra>.{5})p(?<page>.\d{3})(?<field>[a-z]?)(?<line>\d{2,3})?");
         // K0647V17P0815a01
@@ -51,11 +51,25 @@ namespace CBShowimg {
         Regex regexCB = new Regex(@"(?<id>CB)(?<num>\d{5})");
         Regex regexSDRJ = new Regex(@"(?<id>(SD)|(RJ))\-(?<num>[A-F][0-9A-F]{3})");
 
+        public CLineHead(string s) {
+            LineHead = s;
+            AnalysisLineHead();
+        }
         public void AnalysisLineHead() {
             // 標準行首格式 T01n0001_p0001a01
+            string sType = "標準";
             Match m = regex.Match(LineHead);
             if (!m.Success) {
+                sType = "舊麗";
                 m = regexK.Match(LineHead);
+                if(!m.Success) {
+                    sType = "引用複製";
+                    m = regexCopy.Match(LineHead);
+                    if(!m.Success) {
+                        sType = "IDVP";
+                        m = regexIDVP.Match(LineHead);
+                    }
+                }
             }
             if (m.Success) {
                 Type = ItemType.Tripitaka;
@@ -66,6 +80,9 @@ namespace CBShowimg {
                 Field = m.Groups["field"].Value;
                 Line = m.Groups["line"].Value;
                 SetPath();
+                // 設定 OnlineUrl
+                SetOnlineUrl(sType);
+
             } else {
                 m = regexCB.Match(LineHead);
                 if (!m.Success) {
@@ -85,6 +102,91 @@ namespace CBShowimg {
                     }
                 }
             }
+        }
+        // 設定 OnlineUrl
+        void SetOnlineUrl(string sType)
+        {
+            switch(sType) {
+                case "標準": OnlineUrl = LineHead; break;
+                case "舊麗":
+                    // K0647V17P0815a01
+                    OnlineUrl = ID + Vol + "n" + Sutra + "_p" + Page + Field + Line;
+                    break;
+                case "引用複製":
+                    // T01, no. 1, pp. 1c28
+                    OnlineUrl = ID + Vol + "n";
+                    OnlineUrl += GetSutraStandardFormat(Sutra);
+                    OnlineUrl += "p";
+                    OnlineUrl += GetPageStandardFormat(Page, 4);
+                    OnlineUrl += Field;
+                    OnlineUrl += GetLineStandardFormat(Line);
+                    break;
+                case "IDVP": OnlineUrl = ID + Vol + "p" + Page; break;
+            }
+        }
+
+        // 取得標準五字的經號
+        string GetSutraStandardFormat(string sutra)
+        {
+            if(sutra.Length == 5) {
+                return sutra;
+            } else if(sutra.Length > 5) {
+                return sutra.Substring(sutra.Length - 5);
+            }
+            if(sutra[sutra.Length - 1] <= '9') {
+                sutra += "_";    // 經號結尾不英文字, 那就要加 "_" 了
+            }
+            int stringCount = 5;    // 標準經號為 5 個字
+            string sBegin = "";
+            if(sutra[0] > '9') {
+                sBegin = sutra.Substring(0, 1);
+                sutra = sutra.Substring(1);
+                stringCount -= 1;
+            }
+            stringCount = stringCount - sutra.Length;
+            while(stringCount > 0) {
+                sutra = "0" + sutra;
+                stringCount--;
+            }
+            sutra = sBegin + sutra;
+            return sutra;
+        }
+
+        // 取得標準四字的頁碼
+        // stringCount 標準頁碼, 基本上是 4 個字, 若要求 3 個字, 超過 3 個還是會傳回全部
+        string GetPageStandardFormat(string page, int stringCount)
+        {
+            while(page[0] == '0') {
+                page = page.Remove(0, 1);
+            }
+            if(page.Length >= stringCount) {
+                return page;
+            }
+
+            string sBegin = "";
+            if(page[0] > '9') {
+                sBegin = page.Substring(0, 1);
+                page = page.Substring(1);
+                stringCount -= 1;
+            }
+            stringCount = stringCount - page.Length;
+            while(stringCount > 0) {
+                page = "0" + page;
+                stringCount--;
+            }
+            page = sBegin + page;
+            return page;
+        }
+
+        // 取得標準二字的行號
+        string GetLineStandardFormat(string line)
+        {
+            if(line.Length > 2) {
+                return line.Substring(line.Length - 2);
+            } else if (line.Length < 2) {
+                return "0" + line;
+            }
+            return line;
         }
 
         // 由行首算出圖檔路徑
@@ -107,8 +209,8 @@ namespace CBShowimg {
                 newPage = iPage.ToString("0000");
             }
 
-            string page3 = String.Format("{0:000}", Convert.ToInt32(newPage));
-            string page4 = String.Format("{0:0000}", Convert.ToInt32(newPage));
+            string page3 = GetPageStandardFormat(newPage,3);
+            string page4 = GetPageStandardFormat(newPage, 4);
             string pageRange3 = GetPageRange(3, newPage);      // 130 頁 => 101-200
             string pageRange4 = GetPageRange(4, newPage);      // 130 頁 => 101-200
             path = path.Replace("{id}", ID);

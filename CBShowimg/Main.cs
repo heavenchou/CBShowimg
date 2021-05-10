@@ -24,6 +24,10 @@ namespace CBShowimg
             LoadXMLFile();
         }
 
+        // T01,p.1
+        Regex regexIDVP = new Regex(@"[A-Z]+\d+[,\.\s]*p[p,\.\s]*[a-z]?\d+[a-z]?(\d+)?");
+        // T01, no. 1, p. 1a5-7
+        Regex regexCopy = new Regex(@"[A-Z]+\d+,\s*no\.\s*.*?,\s*pp?\.\s*[a-z]?\d+[a-z]?(\d+)?");
         // T01n0001_p0001a01
         Regex regex = new Regex(@"[A-Z]+\d+n.{5}p.\d{3}[a-z]?(\d{2,3})?");
         // K0647V17P0815a01
@@ -37,7 +41,15 @@ namespace CBShowimg
             if (tbLineHead.Text == "") return;
             // 找到的行首資料都放到 LineHeads List 中
             // 標準行首
-            foreach (Match m in regex.Matches(tbLineHead.Text)) {
+            foreach(Match m in regex.Matches(tbLineHead.Text)) {
+                ListBoxAddLineHead(m);
+            }
+            // 引用複製
+            foreach(Match m in regexCopy.Matches(tbLineHead.Text)) {
+                ListBoxAddLineHead(m);
+            }
+            // 只有 ID Vol page
+            foreach(Match m in regexIDVP.Matches(tbLineHead.Text)) {
                 ListBoxAddLineHead(m);
             }
             // 舊版高麗藏, K0647V17P0815a01
@@ -80,7 +92,7 @@ namespace CBShowimg
                 message += $"欄位：{LineHeads[i].Field}\r\n";
                 message += $"行數：{LineHeads[i].Line}\r\n\r\n";
                 message += $"圖檔：\r\n{LineHeads[i].Path}\r\n\r\n";
-                message += $"Online網址：\r\nhttps://cbetaonline.dila.edu.tw/{LineHeads[i].LineHead}";
+                message += $"Online網址：\r\nhttps://cbetaonline.dila.edu.tw/{LineHeads[i].OnlineUrl}";
                 tbDetail.Text = message;
             } else if(LineHeads[i].Type == ItemType.Gaiji) {
                 string message = "";
@@ -105,7 +117,7 @@ namespace CBShowimg
         // 改變按鈕的情況
         void ChangeButtonState(int i) {
             if(LineHeads[i].Type == ItemType.Tripitaka) {
-                btWebSite.Enabled = true;
+                btWebSite.Enabled = (!(LineHeads[i].OnlineUrl == ""));
                 btWebSite.Text = "CBETAOnline";
             } else if (LineHeads[i].ID == "CB") {
                 btWebSite.Enabled = true;
@@ -181,7 +193,7 @@ namespace CBShowimg
 
             string url = "";
             if (LineHeads[i].Type == ItemType.Tripitaka) {
-                url = $"https://cbetaonline.dila.edu.tw/{LineHeads[i].LineHead}";
+                url = $"https://cbetaonline.dila.edu.tw/{LineHeads[i].OnlineUrl}";
             } else if(LineHeads[i].ID == "CB") {
                 url = $"https://dict.cbeta.org/word/search.php?op=search&cb={LineHeads[i].Num}";
             }
@@ -191,7 +203,6 @@ namespace CBShowimg
             } catch (Exception err) {
                 MessageBox.Show($"出問題了：{err.Message}\n網址：{url}");
             }
-            
         }
 
         private void btSetup_Click(object sender, EventArgs e) {
@@ -344,5 +355,12 @@ namespace CBShowimg
             // 取消註冊熱鍵
             HotKey.UnregisterHotKey(Handle, 100);
         }
+
+        private void btClearTextBox_Click(object sender, EventArgs e)
+        {
+            tbLineHead.Text = "";
+            tbLineHead.Focus();
+        }
+
     }
 }

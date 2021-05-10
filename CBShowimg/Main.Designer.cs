@@ -29,6 +29,7 @@ namespace CBShowimg
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tbLineHead = new System.Windows.Forms.TextBox();
             this.btSetup = new System.Windows.Forms.Button();
             this.btRun = new System.Windows.Forms.Button();
@@ -47,6 +48,8 @@ namespace CBShowimg
             this.btOpenSetupXML = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.cbAlwaysOnTop = new System.Windows.Forms.CheckBox();
+            this.btClearTextBox = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -59,10 +62,10 @@ namespace CBShowimg
             // 
             this.tbLineHead.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLineHead.Location = new System.Drawing.Point(107, 50);
+            this.tbLineHead.Location = new System.Drawing.Point(143, 50);
             this.tbLineHead.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tbLineHead.Name = "tbLineHead";
-            this.tbLineHead.Size = new System.Drawing.Size(538, 29);
+            this.tbLineHead.Size = new System.Drawing.Size(501, 29);
             this.tbLineHead.TabIndex = 0;
             this.tbLineHead.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbLineHead_KeyDown);
             // 
@@ -86,7 +89,8 @@ namespace CBShowimg
             this.btRun.Name = "btRun";
             this.btRun.Size = new System.Drawing.Size(44, 29);
             this.btRun.TabIndex = 1;
-            this.btRun.Text = "GO";
+            this.btRun.Text = "Go";
+            this.toolTip1.SetToolTip(this.btRun, "分析左邊欄位");
             this.btRun.UseVisualStyleBackColor = true;
             this.btRun.Click += new System.EventHandler(this.btRun_Click);
             // 
@@ -287,11 +291,25 @@ namespace CBShowimg
             this.cbAlwaysOnTop.Text = "最上層";
             this.cbAlwaysOnTop.UseVisualStyleBackColor = true;
             // 
+            // btClearTextBox
+            // 
+            this.btClearTextBox.BackColor = System.Drawing.Color.White;
+            this.btClearTextBox.ForeColor = System.Drawing.Color.Gray;
+            this.btClearTextBox.Location = new System.Drawing.Point(106, 50);
+            this.btClearTextBox.Name = "btClearTextBox";
+            this.btClearTextBox.Size = new System.Drawing.Size(30, 27);
+            this.btClearTextBox.TabIndex = 11;
+            this.btClearTextBox.Text = "X";
+            this.toolTip1.SetToolTip(this.btClearTextBox, "清除右邊輸入欄位");
+            this.btClearTextBox.UseVisualStyleBackColor = false;
+            this.btClearTextBox.Click += new System.EventHandler(this.btClearTextBox_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(710, 453);
+            this.Controls.Add(this.btClearTextBox);
             this.Controls.Add(this.cbAlwaysOnTop);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btOpenSetupXML);
@@ -343,6 +361,8 @@ namespace CBShowimg
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button btClearTextBox;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 
