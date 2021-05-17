@@ -91,7 +91,15 @@ namespace CBShowimg
                 message += $"頁數：{LineHeads[i].Page}\r\n";
                 message += $"欄位：{LineHeads[i].Field}\r\n";
                 message += $"行數：{LineHeads[i].Line}\r\n\r\n";
-                message += $"圖檔：\r\n{LineHeads[i].Path}\r\n\r\n";
+                message += $"圖檔：\r\n";
+                foreach (string path in LineHeads[i].Paths) {
+                    string sFileExist = "(O)";
+                    if(!File.Exists(path)) {
+                        sFileExist = "(X)";
+                    }
+                    message += $"　　　{path} {sFileExist}\r\n";
+                }
+                message += "\r\n";
                 message += $"Online網址：\r\nhttps://cbetaonline.dila.edu.tw/{LineHeads[i].OnlineUrl}";
                 tbDetail.Text = message;
             } else if(LineHeads[i].Type == ItemType.Gaiji) {
@@ -105,7 +113,15 @@ namespace CBShowimg
                         message = "蘭扎"; break;
                 }
                 message += $"：{LineHeads[i].LineHead}\r\n\r\n";
-                message += $"圖檔：\r\n{LineHeads[i].Path}\r\n\r\n";
+                message += $"圖檔：\r\n";
+                foreach(string path in LineHeads[i].Paths) {
+                    string sFileExist = "(O)";
+                    if(!File.Exists(path)) {
+                        sFileExist = "(X)";
+                    }
+                    message += $"　　　{path} {sFileExist}\r\n";
+                }
+                message += "\r\n";
                 if (LineHeads[i].ID == "CB") {
                     message += $"缺字網址：\r\nhttps://dict.cbeta.org/word/search.php?op=search&cb={LineHeads[i].Num}";
                 }
@@ -143,9 +159,18 @@ namespace CBShowimg
                 i = 0;
                 lbLineHeads.SelectedIndex = 0;
             }
-            if (LineHeads[i].Path != "") {
+            if (LineHeads[i].Paths.Count > 0) {
                 try {
-                    Process.Start(LineHeads[i].Path);
+                    int showCount = 0;
+                    foreach(string file in LineHeads[i].Paths) {
+                        if(File.Exists(file)) {
+                            Process.Start(file);
+                            showCount++;
+                        }
+                    }
+                    if(showCount == 0) {
+                        MessageBox.Show("沒有一個圖檔是存在的。 😔");
+                    }
                 } catch (Exception err) {
                     MessageBox.Show($"出問題了：{err.Message}\n檔案：{LineHeads[i].Path}");
                 }
@@ -218,7 +243,12 @@ namespace CBShowimg
         void LoadXMLFile() {
             string XMLFile = System.Windows.Forms.Application.StartupPath;
             XMLFile += "\\CBShowimg.xml";
-            Option.LoadFromXML(XMLFile);
+            if(File.Exists(XMLFile)) {
+                Option.LoadFromXML(XMLFile);
+            } else {
+                MessageBox.Show($"找不到設定檔 {XMLFile}");
+            }
+            
         }
 
         private void lbLineHeads_DoubleClick(object sender, EventArgs e) {

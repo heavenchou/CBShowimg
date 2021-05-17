@@ -43,7 +43,9 @@ namespace CBShowimg
                                 // 有 id 屬性
                                 if (reader.MoveToAttribute("id")) {
                                     string sID = reader.Value;
-                                    LineHeadItems[sID] = new CLineHeadItem(sID);
+                                    if(!LineHeadItems.ContainsKey(sID)) {
+                                        LineHeadItems[sID] = new CLineHeadItem(sID);
+                                    }
                                     // 取得名字
                                     if (reader.MoveToAttribute("name")) {
                                         LineHeadItems[sID].Name = reader.Value;
@@ -52,6 +54,7 @@ namespace CBShowimg
                                     reader.MoveToElement();
                                     reader.Read();
                                     LineHeadItems[sID].PathRegular = reader.Value;
+                                    LineHeadItems[sID].PathRegulars.Add(reader.Value);
                                 }
                             }
                             break;

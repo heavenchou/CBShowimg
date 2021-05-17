@@ -158,6 +158,7 @@ namespace CBShowimg
             this.tbDetail.Multiline = true;
             this.tbDetail.Name = "tbDetail";
             this.tbDetail.ReadOnly = true;
+            this.tbDetail.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbDetail.Size = new System.Drawing.Size(372, 352);
             this.tbDetail.TabIndex = 7;
             // 

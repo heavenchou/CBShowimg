@@ -19,8 +19,9 @@ namespace CBShowimg {
         ItemType Type;              // 種類
         string ID;                  // T
         public string Name;         // 大正藏
-        // public int VolNum;          // 冊數的位數 2 代表 2 位數
+        // public int VolNum;       // 冊數的位數 2 代表 2 位數
         public string PathRegular;  // 圖檔目錄的正規式
+        public List<string> PathRegulars = new List<string>();
 
         public CLineHeadItem(string id) {
             ID = id;
@@ -31,6 +32,7 @@ namespace CBShowimg {
         public ItemType Type;
         public string ID;          // T
         public string Path;        // 圖檔目錄
+        public List<string> Paths = new List<string>();        // 圖檔目錄
         public string LineHead;
         public string Vol;
         public string Sutra;       // 經號
@@ -82,7 +84,6 @@ namespace CBShowimg {
                 SetPath();
                 // 設定 OnlineUrl
                 SetOnlineUrl(sType);
-
             } else {
                 m = regexCB.Match(LineHead);
                 if (!m.Success) {
@@ -92,7 +93,6 @@ namespace CBShowimg {
                     Type = ItemType.Gaiji;
                     ID = m.Groups["id"].Value;
                     Num = m.Groups["num"].Value;
-                    // SetPath();
                     if (Option.LineHeadItems.ContainsKey(ID)) {
                         string path = Option.LineHeadItems[ID].PathRegular;
                         path = path.Replace("{pre2}", Num.Substring(0, 2));
@@ -103,6 +103,7 @@ namespace CBShowimg {
                 }
             }
         }
+
         // 設定 OnlineUrl
         void SetOnlineUrl(string sType)
         {
@@ -163,9 +164,9 @@ namespace CBShowimg {
                 return page;
             }
 
-            string sBegin = "";
+            string p0 = "";
             if(page[0] > '9') {
-                sBegin = page.Substring(0, 1);
+                p0 = page[0].ToString();
                 page = page.Substring(1);
                 stringCount -= 1;
             }
@@ -174,7 +175,7 @@ namespace CBShowimg {
                 page = "0" + page;
                 stringCount--;
             }
-            page = sBegin + page;
+            page = p0 + page;
             return page;
         }
 
@@ -193,6 +194,90 @@ namespace CBShowimg {
         public void SetPath() {
             if(!Option.LineHeadItems.ContainsKey(ID)) {
                 Path = "";
+                Paths = null;
+                return;
+            }
+
+            Paths.Clear();
+
+            foreach (string reg in Option.LineHeadItems[ID].PathRegulars) {
+                string path = reg;
+                string newPage = Page;
+                // N70 有特殊頁碼
+                if(ID == "N" && Vol == "70") {
+                    int iPage = Convert.ToInt32(newPage);
+                    if (iPage >= 195) {
+                        iPage -= 194;
+                    } else if(iPage >= 107) {
+                        iPage -= 106;
+                    }
+                    newPage = iPage.ToString("0000");
+                }
+
+                string page3 = GetPageStandardFormat(newPage,3);
+                string page4 = GetPageStandardFormat(newPage, 4);
+                string pageRange3 = GetPageRange(newPage, 3);      // 130 頁 => 101-200
+                string pageRange4 = GetPageRange(newPage, 4);      // 130 頁 => 101-200
+                string p0 = "";
+                if(newPage[0] > '9') {
+                    p0 = newPage[0].ToString();
+                }
+                path = path.Replace("{id}", ID);
+                path = path.Replace("{path}", Option.ImageRootPath);
+                path = path.Replace("{vol}", Vol);
+                path = path.Replace("{sutra}", Sutra.Replace("_",""));
+                path = path.Replace("{pa}", p0);
+                path = path.Replace("{page3}", page3);
+                path = path.Replace("{page4}", page4);
+                path = path.Replace("{pagerange3}", pageRange3);
+                path = path.Replace("{pagerange4}", pageRange4);
+                path = path.Replace("{field}", Field);
+
+                // 特殊圖檔要處理
+                // 南傳有二種:
+                // N00-gif\001-100\00-001.gif
+                // N01-g4\001-100\01-001.TIF
+                // N70 冊頁數 107~194 要-106 N70-2-gif , 195~ 要 -194, N70-3-gi5
+
+                if (ID == "N"){
+                    int iVol = Convert.ToInt32(Vol);
+                    /*
+                    if (iVol < 1 || iVol > 52) {
+                        path = path.Replace("-g4", "-gif");
+                        path = path.Replace(".TIF", ".gif");
+                    }
+                    */
+                    if(Vol == "70") {
+                        int iPage = Convert.ToInt32(Page);  // 原始的 Page
+                        if (iPage >= 195) {
+                            path = path.Replace("-gif", "-3-gif");
+                        } else if (iPage >= 107) {
+                            path = path.Replace("-gif", "-2-gif");
+                        } else {
+                            path = path.Replace("-gif", "-1-gif");
+                        }
+                    }
+                }
+
+                // 國圖有 jpg 有 TIF，找不到就要換
+                /*
+                if(ID == "D") {
+                    if (!System.IO.File.Exists(path)) {
+                        path = path.Replace(".TIF", ".jpg");
+                    }
+                }
+                */
+
+                Path = path;
+                Paths.Add(path);
+            }
+        }
+
+        // 由行首算出圖檔路徑
+        public void SetPath_orig()
+        {
+            if(!Option.LineHeadItems.ContainsKey(ID)) {
+                Path = "";
                 return;
             }
             string path = Option.LineHeadItems[ID].PathRegular;
@@ -201,7 +286,7 @@ namespace CBShowimg {
             // N70 有特殊頁碼
             if(ID == "N" && Vol == "70") {
                 int iPage = Convert.ToInt32(newPage);
-                if (iPage >= 195) {
+                if(iPage >= 195) {
                     iPage -= 194;
                 } else if(iPage >= 107) {
                     iPage -= 106;
@@ -209,14 +294,14 @@ namespace CBShowimg {
                 newPage = iPage.ToString("0000");
             }
 
-            string page3 = GetPageStandardFormat(newPage,3);
+            string page3 = GetPageStandardFormat(newPage, 3);
             string page4 = GetPageStandardFormat(newPage, 4);
-            string pageRange3 = GetPageRange(3, newPage);      // 130 頁 => 101-200
-            string pageRange4 = GetPageRange(4, newPage);      // 130 頁 => 101-200
+            string pageRange3 = GetPageRange(newPage, 3);      // 130 頁 => 101-200
+            string pageRange4 = GetPageRange(newPage, 4);      // 130 頁 => 101-200
             path = path.Replace("{id}", ID);
             path = path.Replace("{path}", Option.ImageRootPath);
             path = path.Replace("{vol}", Vol);
-            path = path.Replace("{sutra}", Sutra.Replace("_",""));
+            path = path.Replace("{sutra}", Sutra.Replace("_", ""));
             path = path.Replace("{page3}", page3);
             path = path.Replace("{page4}", page4);
             path = path.Replace("{pagerange3}", pageRange3);
@@ -229,17 +314,17 @@ namespace CBShowimg {
             // N01-g4\001-100\01-001.TIF
             // N70 冊頁數 107~194 要-106 N70-2-gif , 195~ 要 -194, N70-3-gi5
 
-            if (ID == "N"){
+            if(ID == "N") {
                 int iVol = Convert.ToInt32(Vol);
-                if (iVol < 1 || iVol > 52) {
+                if(iVol < 1 || iVol > 52) {
                     path = path.Replace("-g4", "-gif");
                     path = path.Replace(".TIF", ".gif");
                 }
                 if(Vol == "70") {
                     int iPage = Convert.ToInt32(Page);  // 原始的 Page
-                    if (iPage >= 195) {
+                    if(iPage >= 195) {
                         path = path.Replace("-gif", "-3-gif");
-                    } else if (iPage >= 107) {
+                    } else if(iPage >= 107) {
                         path = path.Replace("-gif", "-2-gif");
                     } else {
                         path = path.Replace("-gif", "-1-gif");
@@ -250,7 +335,7 @@ namespace CBShowimg {
             // 國圖有 jpg 有 TIF，找不到就要換
 
             if(ID == "D") {
-                if (!System.IO.File.Exists(path)) {
+                if(!System.IO.File.Exists(path)) {
                     path = path.Replace(".TIF", ".jpg");
                 }
             }
@@ -262,14 +347,26 @@ namespace CBShowimg {
         // x = 3 , 138 => 101-200
         // x = 4 , 138 => 0101-0200
         string GetPageRange(int x) {
-            return GetPageRange(x, Page);
+            return GetPageRange(Page, x);
         }
-        string GetPageRange(int x, string p) {
+
+        string GetPageRange(string p, int x) {
+            string p0 = ""; // 用來判斷 page 第一個字母是不是英文字
+            if(p[0] > '9') {
+                p0 = p[0].ToString();
+                p = p.Substring(1);
+            }
+
             int page = Convert.ToInt32(p);
             page = (int)((page - 1) / 100) * 100 + 1;
             string pageRange = "";
+
+            if(p0.Length == 1 && x == 4) {
+                x = 3;
+            }
             if (x == 3) {
-                pageRange = String.Format("{0:000}-{1:000}", page, page + 99);
+                pageRange = p0 + String.Format("{0:000}-", page);
+                pageRange += p0 + String.Format("{0:000}", page + 99);
             } else if(x == 4 ) {
                 pageRange = String.Format("{0:0000}-{1:0000}", page, page + 99);
             }
