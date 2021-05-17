@@ -20,6 +20,9 @@ namespace CBShowimg
         public MainForm()
         {
             InitializeComponent();
+            // 註冊熱鍵
+            SetupHotKey();
+            Size = Properties.Settings.Default.FormSize;
             // 載入 XML 設定檔
             LoadXMLFile();
         }
@@ -267,21 +270,10 @@ namespace CBShowimg
             }
         }
 
-        private void MainForm_Activated(object sender, EventArgs e) {
-            // 註冊熱鍵
-            SetupHotKey();
-
-            Size = new Size(Properties.Settings.Default.FormWidth, Properties.Settings.Default.FormHeight);
-
-        }
-
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
             // 取消註冊熱鍵
             DisableHotKey();
-
-            Properties.Settings.Default.FormWidth = Size.Width;
-            Properties.Settings.Default.FormHeight = Size.Height;
-
+            Properties.Settings.Default.FormSize = Size;
             Properties.Settings.Default.Save();
         }
 

@@ -37,30 +37,6 @@ namespace CBShowimg.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("700")]
-        public int FormWidth {
-            get {
-                return ((int)(this["FormWidth"]));
-            }
-            set {
-                this["FormWidth"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("500")]
-        public int FormHeight {
-            get {
-                return ((int)(this["FormHeight"]));
-            }
-            set {
-                this["FormHeight"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("F7")]
         public string HotKey {
             get {
@@ -92,6 +68,18 @@ namespace CBShowimg.Properties {
             }
             set {
                 this["FormLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("700, 500")]
+        public global::System.Drawing.Size FormSize {
+            get {
+                return ((global::System.Drawing.Size)(this["FormSize"]));
+            }
+            set {
+                this["FormSize"] = value;
             }
         }
     }

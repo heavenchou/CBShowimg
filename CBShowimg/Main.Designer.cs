@@ -327,7 +327,6 @@ namespace CBShowimg
             this.Name = "MainForm";
             this.Text = "CBETA 神秀圖";
             this.TopMost = global::CBShowimg.Properties.Settings.Default.AlwaysOnTop;
-            this.Activated += new System.EventHandler(this.MainForm_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);

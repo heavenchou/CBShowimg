@@ -5,12 +5,6 @@
     <Setting Name="AlwaysOnTop" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="FormWidth" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">700</Value>
-    </Setting>
-    <Setting Name="FormHeight" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">500</Value>
-    </Setting>
     <Setting Name="HotKey" Type="System.String" Scope="User">
       <Value Profile="(Default)">F7</Value>
     </Setting>
@@ -19,6 +13,9 @@
     </Setting>
     <Setting Name="FormLocation" Type="System.Drawing.Point" Scope="User">
       <Value Profile="(Default)">550, 330</Value>
+    </Setting>
+    <Setting Name="FormSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">700, 500</Value>
     </Setting>
   </Settings>
 </SettingsFile>
