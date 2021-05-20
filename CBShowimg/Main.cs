@@ -87,7 +87,11 @@ namespace CBShowimg
                 sutraName = Option.LineHeadItems[LineHeads[i].ID].Name;
             }
             if (LineHeads[i].Type == ItemType.Tripitaka) {
-                string message = $"行首：{LineHeads[i].LineHead}\r\n\r\n";
+                string message = "";
+                if(!Option.LineHeadItems.ContainsKey(LineHeads[i].ID)) {
+                    message = $"【設定檔中沒有 {LineHeads[i].ID} 此藏經的資料】\r\n\r\n";
+                }
+                message += $"行首：{LineHeads[i].LineHead}\r\n\r\n";
                 message += $"藏經：{LineHeads[i].ID} ({sutraName})\r\n";
                 message += $"冊數：{LineHeads[i].Vol}\r\n";
                 message += $"經號：{LineHeads[i].Sutra.Replace("_", "")}\r\n";
@@ -95,12 +99,14 @@ namespace CBShowimg
                 message += $"欄位：{LineHeads[i].Field}\r\n";
                 message += $"行數：{LineHeads[i].Line}\r\n\r\n";
                 message += $"圖檔：\r\n";
-                foreach (string path in LineHeads[i].Paths) {
-                    string sFileExist = "(O)";
-                    if(!File.Exists(path)) {
-                        sFileExist = "(X)";
+                if(Option.LineHeadItems.ContainsKey(LineHeads[i].ID)) {
+                    foreach(string path in LineHeads[i].Paths) {
+                        string sFileExist = "(O)";
+                        if(!File.Exists(path)) {
+                            sFileExist = "(X)";
+                        }
+                        message += $"　　　{path} {sFileExist}\r\n";
                     }
-                    message += $"　　　{path} {sFileExist}\r\n";
                 }
                 message += "\r\n";
                 message += $"Online網址：\r\nhttps://cbetaonline.dila.edu.tw/{LineHeads[i].OnlineUrl}";

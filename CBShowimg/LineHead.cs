@@ -58,6 +58,7 @@ namespace CBShowimg {
             AnalysisLineHead();
         }
         public void AnalysisLineHead() {
+
             // 標準行首格式 T01n0001_p0001a01
             string sType = "標準";
             Match m = regex.Match(LineHead);
@@ -204,7 +205,7 @@ namespace CBShowimg {
                 string path = reg;
                 string newPage = Page;
                 // N70 有特殊頁碼
-                if(ID == "N" && Vol == "70") {
+                if(ID == "N" && Vol == "70" && newPage[0] <= '9') {
                     int iPage = Convert.ToInt32(newPage);
                     if (iPage >= 195) {
                         iPage -= 194;
@@ -248,13 +249,36 @@ namespace CBShowimg {
                     }
                     */
                     if(Vol == "70") {
-                        int iPage = Convert.ToInt32(Page);  // 原始的 Page
-                        if (iPage >= 195) {
-                            path = path.Replace("-gif", "-3-gif");
-                        } else if (iPage >= 107) {
-                            path = path.Replace("-gif", "-2-gif");
+                        if(Page[0] <= '9') {
+                            int iPage = Convert.ToInt32(Page);  // 原始的 Page
+                            if(iPage >= 195) {
+                                path = path.Replace("-gif", "-3-gif");
+                                path = path.Replace("-g4", "-3-g4");
+                            } else if(iPage >= 107) {
+                                path = path.Replace("-gif", "-2-gif");
+                                path = path.Replace("-g4", "-2-g4");
+                            } else {
+                                path = path.Replace("-gif", "-1-gif");
+                                path = path.Replace("-g4", "-1-g4");
+                            }
                         } else {
-                            path = path.Replace("-gif", "-1-gif");
+                            // 封面封底有英文開頭的特殊頁碼
+                            if(Sutra.EndsWith("37")) {
+                                path = path.Replace("-gif", "-2-gif");
+                                path = path.Replace("-g4", "-2-g4");
+                                path = path.Replace("N70Front", "N70-2-Front");
+                                path = path.Replace("N70Back", "N70-2-Back");
+                            } else if(Sutra.EndsWith("38")) {
+                                path = path.Replace("-gif", "-3-gif");
+                                path = path.Replace("-g4", "-3-g4");
+                                path = path.Replace("N70Front", "N70-3-Front");
+                                path = path.Replace("N70Back", "N70-3-Back");
+                            } else {
+                                path = path.Replace("-gif", "-1-gif");
+                                path = path.Replace("-g4", "-1-g4");
+                                path = path.Replace("N70Front", "N70-1-Front");
+                                path = path.Replace("N70Back", "N70-1-Back");
+                            }
                         }
                     }
                 }
