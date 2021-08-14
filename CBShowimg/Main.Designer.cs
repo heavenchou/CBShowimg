@@ -277,7 +277,7 @@ namespace CBShowimg
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(229, 42);
             this.label2.TabIndex = 6;
-            this.label2.Text = "CBETA 神秀圖";
+            this.label2.Text = "CBETA 神叫圖";
             // 
             // cbAlwaysOnTop
             // 
@@ -325,7 +325,7 @@ namespace CBShowimg
             this.Location = global::CBShowimg.Properties.Settings.Default.FormLocation;
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "MainForm";
-            this.Text = "CBETA 神秀圖";
+            this.Text = "CBETA 神叫圖";
             this.TopMost = global::CBShowimg.Properties.Settings.Default.AlwaysOnTop;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.splitContainer1.Panel1.ResumeLayout(false);

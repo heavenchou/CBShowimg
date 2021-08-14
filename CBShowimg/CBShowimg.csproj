@@ -7,7 +7,7 @@
     <ProjectGuid>{8ABB44B6-87D2-4FA9-B80D-94D9408C9A45}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>CBShowimg</RootNamespace>
-    <AssemblyName>CBShowimg</AssemblyName>
+    <AssemblyName>CBCallImage</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -102,6 +102,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="CBShowimg_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest" />

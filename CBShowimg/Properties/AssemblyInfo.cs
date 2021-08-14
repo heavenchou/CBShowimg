@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // 組件的一般資訊是由下列的屬性集控制。
 // 變更這些屬性的值即可修改組件的相關
 // 資訊。
-[assembly: AssemblyTitle("CBETA Show Image (神秀圖)")]
-[assembly: AssemblyDescription("CBETA Show Image (神秀圖)")]
+[assembly: AssemblyTitle("CBETA Call Image (神叫圖)")]
+[assembly: AssemblyDescription("CBETA Call Image (神叫圖)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CBETA")]
-[assembly: AssemblyProduct("Show Image")]
+[assembly: AssemblyProduct("Call Image")]
 [assembly: AssemblyCopyright("Copyright © 2021 Heaven Chou")]
 [assembly: AssemblyTrademark("Copyright © 1998-2021 CBETA")]
 [assembly: AssemblyCulture("")]
@@ -33,6 +33,6 @@ using System.Runtime.InteropServices;
 // 您可以指定所有的值，也可以使用 '*' 將組建和修訂編號
 // 設為預設，如下所示:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.4.0.0")]
-[assembly: AssemblyFileVersion("0.4.0.0")]
+[assembly: AssemblyVersion("0.5.0.0")]
+[assembly: AssemblyFileVersion("0.5.0.0")]
 [assembly: NeutralResourcesLanguage("zh-TW")]

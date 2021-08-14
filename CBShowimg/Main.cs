@@ -251,7 +251,7 @@ namespace CBShowimg
 
         void LoadXMLFile() {
             string XMLFile = System.Windows.Forms.Application.StartupPath;
-            XMLFile += "\\CBShowimg.xml";
+            XMLFile += "\\CBCallImage.xml";
             if(File.Exists(XMLFile)) {
                 Option.LoadFromXML(XMLFile);
             } else {
@@ -268,7 +268,7 @@ namespace CBShowimg
         private void btOpenSetupXML_Click(object sender, EventArgs e) {
 
             string XMLFile = System.Windows.Forms.Application.StartupPath;
-            XMLFile += "\\CBShowimg.xml";
+            XMLFile += "\\CBCallImage.xml";
             try {
                 Process.Start(XMLFile);
             } catch (Exception err) {
