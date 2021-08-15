@@ -35,6 +35,8 @@ namespace CBShowimg
         Regex regex = new Regex(@"[A-Z]+\d+n.{5}p.\d{3}[a-z]?(\d{2,3})?");
         // K0647V17P0815a01
         Regex regexK = new Regex(@"K\d{4}V\d\dP\d{4}[a-z]?(\d{2,3})?");
+        Regex regexJC = new Regex(@"(?<id>JC)\-(?<casetype>[AB]?)(?<case>[\d_Aab]+)\-(?<vol>[\d_]+)\-(?<page>\d{4})");
+
         Regex regexCB = new Regex(@"CB\d{5}");
         Regex regexSDRJ = new Regex(@"((SD)|(RJ))\-[A-F][0-9A-F]{3}");
 
@@ -62,7 +64,10 @@ namespace CBShowimg
             foreach (Match m in regexCB.Matches(tbLineHead.Text)) {
                 ListBoxAddLineHead(m);
             }
-            foreach (Match m in regexSDRJ.Matches(tbLineHead.Text)) {
+            foreach(Match m in regexSDRJ.Matches(tbLineHead.Text)) {
+                ListBoxAddLineHead(m);
+            }
+            foreach(Match m in regexJC.Matches(tbLineHead.Text)) {
                 ListBoxAddLineHead(m);
             }
 

@@ -34,12 +34,14 @@ namespace CBShowimg {
         public string Path;        // 圖檔目錄
         public List<string> Paths = new List<string>();        // 圖檔目錄
         public string LineHead;
-        public string Vol;
-        public string Sutra;       // 經號
-        public string Page;        // 頁碼
-        public string Field;       // 欄
-        public string Line;        // 行
-        public string Num;         // CB, SD, RJ 的 4~5 碼
+        public string CaseType;     // 函(帙)的總類, JC 有 A 和 B 二種特例
+        public string Case;         // 函(帙), 嘉興藏有用到
+        public string Vol;          // 冊
+        public string Sutra;        // 經號
+        public string Page;         // 頁碼
+        public string Field;        // 欄
+        public string Line;         // 行
+        public string Num;          // CB, SD, RJ 的 4~5 碼
         public string OnlineUrl = "";    // cbetaonline 的網址, 通常為行首資訊
 
         // T01,p.1
@@ -47,9 +49,13 @@ namespace CBShowimg {
         // T01, no. 1, p. 1a5-7
         Regex regexCopy = new Regex(@"(?<id>[A-Z]+)(?<vol>\d+),\s*no\.\s*(?<sutra>.*?),\s*pp?\.\s*(?<page>[a-z]?\d+)(?<field>[a-z]?)(?<line>\d{2,3})?");
         // T01n0001_p0001a01
-        Regex regex = new Regex(@"(?<id>[A-Z]+)(?<vol>\d+)n(?<sutra>.{5})p(?<page>.\d{3})(?<field>[a-z]?)(?<line>\d{2,3})?");
+        Regex regex = new Regex(@"(?<id>[A-Z]+)(?<vol>\d+)n(?<sutra>.{5})p(?<page>.\d{3})(?<field>[a-z]?)(?<line>\d{2,3})?");       
         // K0647V17P0815a01
         Regex regexK = new Regex(@"(?<id>K)(?<sutra>\d{4})V(?<vol>\d\d)P(?<page>\d{4})(?<field>[a-z]?)(?<line>\d{2,3})?");
+        // AC-A001-01-0001 , AC-001_003-01-0001 , AC-B001-01_01-0001 , 東大版嘉興藏
+        Regex regexJC = new Regex(@"(?<id>JC)\-(?<casetype>[AB]?)(?<case>[\d_Aab]+)\-(?<vol>[\d_]+)\-(?<page>\d{4})");
+
+
         Regex regexCB = new Regex(@"(?<id>CB)(?<num>\d{5})");
         Regex regexSDRJ = new Regex(@"(?<id>(SD)|(RJ))\-(?<num>[A-F][0-9A-F]{3})");
 
@@ -66,17 +72,23 @@ namespace CBShowimg {
                 sType = "舊麗";
                 m = regexK.Match(LineHead);
                 if(!m.Success) {
-                    sType = "引用複製";
-                    m = regexCopy.Match(LineHead);
+                    sType = "東大嘉興";
+                    m = regexJC.Match(LineHead);
                     if(!m.Success) {
-                        sType = "IDVP";
-                        m = regexIDVP.Match(LineHead);
+                        sType = "引用複製";
+                        m = regexCopy.Match(LineHead);
+                        if(!m.Success) {
+                            sType = "IDVP";
+                            m = regexIDVP.Match(LineHead);
+                        }
                     }
                 }
             }
             if (m.Success) {
                 Type = ItemType.Tripitaka;
                 ID = m.Groups["id"].Value;
+                CaseType = m.Groups["casetype"].Value;
+                Case = m.Groups["case"].Value;
                 Vol = m.Groups["vol"].Value;
                 Sutra = m.Groups["sutra"].Value;
                 Page = m.Groups["page"].Value;
@@ -217,21 +229,36 @@ namespace CBShowimg {
 
                 string page3 = GetPageStandardFormat(newPage,3);
                 string page4 = GetPageStandardFormat(newPage, 4);
-                string pageRange3 = GetPageRange(newPage, 3);      // 130 頁 => 101-200
-                string pageRange4 = GetPageRange(newPage, 4);      // 130 頁 => 101-200
+                string pageRange3 = GetPageRange(newPage, 3, 1);      // 130 頁 => 101-200
+                string pageRange4 = GetPageRange(newPage, 4, 1);      // 130 頁 => 0101-0200
+                string pageRange30 = GetPageRange(newPage, 3, 0);      // 130 頁 => 100-199
+                string pageRange40 = GetPageRange(newPage, 4, 0);      // 130 頁 => 0100-0199
                 string p0 = "";
                 if(newPage[0] > '9') {
                     p0 = newPage[0].ToString();
                 }
-                path = path.Replace("{id}", ID);
+
+                string id_casetype = ID;
+                // JC 有三種 casetype , "", "A", "B", 所以 id_casetype 有三種
+                // "JC", "JC-A", "JC-B"
+                if(CaseType != "") {
+                    id_casetype = id_casetype + "-" + CaseType;
+                }
+
                 path = path.Replace("{path}", Option.ImageRootPath);
+                path = path.Replace("{id}", ID);
                 path = path.Replace("{vol}", Vol);
+                path = path.Replace("{id_casetype}", id_casetype);
+                path = path.Replace("{casetype}", CaseType);
+                path = path.Replace("{case}", CaseType + Case);
                 path = path.Replace("{sutra}", Sutra.Replace("_",""));
                 path = path.Replace("{pa}", p0);
                 path = path.Replace("{page3}", page3);
                 path = path.Replace("{page4}", page4);
                 path = path.Replace("{pagerange3}", pageRange3);
                 path = path.Replace("{pagerange4}", pageRange4);
+                path = path.Replace("{pagerange30}", pageRange30);
+                path = path.Replace("{pagerange40}", pageRange40);
                 path = path.Replace("{field}", Field);
 
                 // 特殊圖檔要處理
@@ -320,8 +347,10 @@ namespace CBShowimg {
 
             string page3 = GetPageStandardFormat(newPage, 3);
             string page4 = GetPageStandardFormat(newPage, 4);
-            string pageRange3 = GetPageRange(newPage, 3);      // 130 頁 => 101-200
-            string pageRange4 = GetPageRange(newPage, 4);      // 130 頁 => 101-200
+            string pageRange3 = GetPageRange(newPage, 3, 1);      // 130 頁 => 101-200
+            string pageRange4 = GetPageRange(newPage, 4, 1);      // 130 頁 => 0101-0200
+            string pageRange30 = GetPageRange(newPage, 3, 0);      // 130 頁 => 100-199
+            string pageRange40 = GetPageRange(newPage, 4, 0);      // 130 頁 => 0100-0199
             path = path.Replace("{id}", ID);
             path = path.Replace("{path}", Option.ImageRootPath);
             path = path.Replace("{vol}", Vol);
@@ -330,6 +359,8 @@ namespace CBShowimg {
             path = path.Replace("{page4}", page4);
             path = path.Replace("{pagerange3}", pageRange3);
             path = path.Replace("{pagerange4}", pageRange4);
+            path = path.Replace("{pagerange30}", pageRange30);
+            path = path.Replace("{pagerange40}", pageRange40);
             path = path.Replace("{field}", Field);
 
             // 特殊圖檔要處理
@@ -370,11 +401,15 @@ namespace CBShowimg {
         // 由頁碼算出範圍
         // x = 3 , 138 => 101-200
         // x = 4 , 138 => 0101-0200
-        string GetPageRange(int x) {
-            return GetPageRange(Page, x);
+        string GetPageRange(int x, int shift) {
+            return GetPageRange(Page, x, shift);
         }
 
-        string GetPageRange(string p, int x) {
+        // 123 =>  101-200 (x = 3 位數, shift = 1 頁數由 1 開始)
+        // 123 =>  100-199 (x = 3 位數, shift = 0 頁數由 0 開始)
+        // 123 => 0101-0200 (x = 4 位數, shift = 1 頁數由 1 開始)
+        // 123 => 0100-0199 (x = 4 位數, shift = 0 頁數由 0 開始)
+        string GetPageRange(string p, int x, int shift) {
             string p0 = ""; // 用來判斷 page 第一個字母是不是英文字
             if(p[0] > '9') {
                 p0 = p[0].ToString();
@@ -382,7 +417,7 @@ namespace CBShowimg {
             }
 
             int page = Convert.ToInt32(p);
-            page = (int)((page - 1) / 100) * 100 + 1;
+            page = (int)((page - shift) / 100) * 100 + shift;
             string pageRange = "";
 
             if(p0.Length == 1 && x == 4) {
