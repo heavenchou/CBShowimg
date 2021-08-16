@@ -241,7 +241,7 @@ namespace CBShowimg {
                 string pageRange4 = GetPageRange(newPage, 4, 1);      // 130 頁 => 0101-0200
                 string pageRange30 = GetPageRange(newPage, 3, 0);      // 130 頁 => 100-199
                 string pageRange40 = GetPageRange(newPage, 4, 0);      // 130 頁 => 0100-0199
-                string sutraRange40 = GetPageRange(Sutra, 4, 0);      // 130 頁 => 0100-0199
+                string sutraRange40 = GetPageRange(Sutra.Replace("_",""), 4, 0);      // 130 頁 => 0100-0199
                 string p0 = "";
                 if(newPage[0] > '9') {
                     p0 = newPage[0].ToString();
