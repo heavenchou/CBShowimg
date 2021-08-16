@@ -38,6 +38,7 @@ namespace CBShowimg {
         public string Case;         // 函(帙), 嘉興藏有用到
         public string Vol;          // 冊
         public string Sutra;        // 經號
+        public string Juan;         // 卷
         public string Page;         // 頁碼
         public string Field;        // 欄
         public string Line;         // 行
@@ -52,9 +53,11 @@ namespace CBShowimg {
         Regex regex = new Regex(@"(?<id>[A-Z]+)(?<vol>\d+)n(?<sutra>.{5})p(?<page>.\d{3})(?<field>[a-z]?)(?<line>\d{2,3})?");       
         // K0647V17P0815a01
         Regex regexK = new Regex(@"(?<id>K)(?<sutra>\d{4})V(?<vol>\d\d)P(?<page>\d{4})(?<field>[a-z]?)(?<line>\d{2,3})?");
-        // AC-A001-01-0001 , AC-001_003-01-0001 , AC-B001-01_01-0001 , 東大版嘉興藏
-        Regex regexJC = new Regex(@"(?<id>JC)\-(?<casetype>[AB]?)(?<case>[\d_Aab]+)\-(?<vol>[\d_]+)\-(?<page>\d{4})");
-
+        // JC-A001-01-0001 , JC-001_003-01-0001 , JC-B001-01_01-0001 , 東大版嘉興藏
+        // JD-001-01-0001 (民族版嘉興藏)
+        Regex regexJC = new Regex(@"(?<id>J[CD])\-?(?<casetype>[AB]?)(?<case>[\d_Aab]+)\-(?<vol>[\d_]+)\-(?<page>\d{4})");
+        // AC5309-003-0002 (中國國圖版金藏)
+        Regex regexAC = new Regex(@"(?<id>AC)(?<sutra>\d{4})\-(?<juan>\d{3})\-(?<page>\d{4})");
 
         Regex regexCB = new Regex(@"(?<id>CB)(?<num>\d{5})");
         Regex regexSDRJ = new Regex(@"(?<id>(SD)|(RJ))\-(?<num>[A-F][0-9A-F]{3})");
@@ -69,17 +72,21 @@ namespace CBShowimg {
             string sType = "標準";
             Match m = regex.Match(LineHead);
             if (!m.Success) {
-                sType = "舊麗";
+                sType = "麗藏（舊版）";
                 m = regexK.Match(LineHead);
                 if(!m.Success) {
-                    sType = "東大嘉興";
+                    sType = "嘉興（東大）";
                     m = regexJC.Match(LineHead);
                     if(!m.Success) {
-                        sType = "引用複製";
-                        m = regexCopy.Match(LineHead);
+                        sType = "金藏（中國國圖）";
+                        m = regexAC.Match(LineHead);
                         if(!m.Success) {
-                            sType = "IDVP";
-                            m = regexIDVP.Match(LineHead);
+                            sType = "引用複製";
+                            m = regexCopy.Match(LineHead);
+                            if(!m.Success) {
+                                sType = "IDVP";
+                                m = regexIDVP.Match(LineHead);
+                            }
                         }
                     }
                 }
@@ -91,6 +98,7 @@ namespace CBShowimg {
                 Case = m.Groups["case"].Value;
                 Vol = m.Groups["vol"].Value;
                 Sutra = m.Groups["sutra"].Value;
+                Juan = m.Groups["juan"].Value;
                 Page = m.Groups["page"].Value;
                 Field = m.Groups["field"].Value;
                 Line = m.Groups["line"].Value;
@@ -122,7 +130,7 @@ namespace CBShowimg {
         {
             switch(sType) {
                 case "標準": OnlineUrl = LineHead; break;
-                case "舊麗":
+                case "麗藏（舊版）":
                     // K0647V17P0815a01
                     OnlineUrl = ID + Vol + "n" + Sutra + "_p" + Page + Field + Line;
                     break;
@@ -233,6 +241,7 @@ namespace CBShowimg {
                 string pageRange4 = GetPageRange(newPage, 4, 1);      // 130 頁 => 0101-0200
                 string pageRange30 = GetPageRange(newPage, 3, 0);      // 130 頁 => 100-199
                 string pageRange40 = GetPageRange(newPage, 4, 0);      // 130 頁 => 0100-0199
+                string sutraRange40 = GetPageRange(Sutra, 4, 0);      // 130 頁 => 0100-0199
                 string p0 = "";
                 if(newPage[0] > '9') {
                     p0 = newPage[0].ToString();
@@ -251,7 +260,9 @@ namespace CBShowimg {
                 path = path.Replace("{id_casetype}", id_casetype);
                 path = path.Replace("{casetype}", CaseType);
                 path = path.Replace("{case}", CaseType + Case);
-                path = path.Replace("{sutra}", Sutra.Replace("_",""));
+                path = path.Replace("{sutrarange40}", sutraRange40);
+                path = path.Replace("{sutra}", Sutra.Replace("_", ""));
+                path = path.Replace("{juan}", Juan);
                 path = path.Replace("{pa}", p0);
                 path = path.Replace("{page3}", page3);
                 path = path.Replace("{page4}", page4);
@@ -410,6 +421,9 @@ namespace CBShowimg {
         // 123 => 0101-0200 (x = 4 位數, shift = 1 頁數由 1 開始)
         // 123 => 0100-0199 (x = 4 位數, shift = 0 頁數由 0 開始)
         string GetPageRange(string p, int x, int shift) {
+            if(p == "") {
+                return "";
+            }
             string p0 = ""; // 用來判斷 page 第一個字母是不是英文字
             if(p[0] > '9') {
                 p0 = p[0].ToString();

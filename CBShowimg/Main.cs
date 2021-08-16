@@ -11,6 +11,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System;
+using System.Reflection;
 
 namespace CBShowimg
 {
@@ -25,6 +27,8 @@ namespace CBShowimg
             Size = Properties.Settings.Default.FormSize;
             // 載入 XML 設定檔
             LoadXMLFile();
+            string ver = typeof(MainForm).Assembly.GetName().Version.ToString();
+            Text = Text + " - v" + ver.Replace(".0.0", "");
         }
 
         // T01,p.1
@@ -35,7 +39,11 @@ namespace CBShowimg
         Regex regex = new Regex(@"[A-Z]+\d+n.{5}p.\d{3}[a-z]?(\d{2,3})?");
         // K0647V17P0815a01
         Regex regexK = new Regex(@"K\d{4}V\d\dP\d{4}[a-z]?(\d{2,3})?");
-        Regex regexJC = new Regex(@"(?<id>JC)\-(?<casetype>[AB]?)(?<case>[\d_Aab]+)\-(?<vol>[\d_]+)\-(?<page>\d{4})");
+        // JC-001-02-0003 , JC-A002-03_04-0005 , JC-B003_004-05-0006 (東大版嘉興藏)
+        // JD-001-01-0001 (民族版嘉興藏)
+        Regex regexJC = new Regex(@"(?<id>J[CD])\-?(?<casetype>[AB]?)(?<case>[\d_Aab]+)\-(?<vol>[\d_]+)\-(?<page>\d{4})");
+        // AC5309-003-0002 (中國國圖版金藏)
+        Regex regexAC = new Regex(@"(?<id>AC)(?<sutra>\d{4})\-(?<juan>\d{3})\-(?<page>\d{4})");
 
         Regex regexCB = new Regex(@"CB\d{5}");
         Regex regexSDRJ = new Regex(@"((SD)|(RJ))\-[A-F][0-9A-F]{3}");
@@ -68,6 +76,9 @@ namespace CBShowimg
                 ListBoxAddLineHead(m);
             }
             foreach(Match m in regexJC.Matches(tbLineHead.Text)) {
+                ListBoxAddLineHead(m);
+            }
+            foreach(Match m in regexAC.Matches(tbLineHead.Text)) {
                 ListBoxAddLineHead(m);
             }
 
