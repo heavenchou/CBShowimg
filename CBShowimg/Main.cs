@@ -109,8 +109,14 @@ namespace CBShowimg
                 }
                 message += $"行首：{LineHeads[i].LineHead}\r\n\r\n";
                 message += $"藏經：{LineHeads[i].ID} ({sutraName})\r\n";
+                if(LineHeads[i].Case != "") {
+                    message += $"函帙：{LineHeads[i].Case}\r\n";
+                }
                 message += $"冊數：{LineHeads[i].Vol}\r\n";
                 message += $"經號：{LineHeads[i].Sutra.Replace("_", "")}\r\n";
+                if(LineHeads[i].Juan != "") {
+                    message += $"卷數：{LineHeads[i].Juan}\r\n";
+                }
                 message += $"頁數：{LineHeads[i].Page}\r\n";
                 message += $"欄位：{LineHeads[i].Field}\r\n";
                 message += $"行數：{LineHeads[i].Line}\r\n\r\n";
