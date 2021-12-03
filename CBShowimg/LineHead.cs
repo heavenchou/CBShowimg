@@ -57,7 +57,7 @@ namespace CBShowimg {
         // JD-001-01-0001 (民族版嘉興藏)
         Regex regexJC = new Regex(@"(?<id>J[CD])\-?(?<casetype>[AB]?)(?<case>[\d_Aab]+)\-(?<vol>[\d_]+)\-(?<page>\d{4})");
         // AC5309-003-0002 (中國國圖版金藏)
-        Regex regexAC = new Regex(@"(?<id>AC)(?<sutra>\d{4})\-(?<juan>\d{3})\-(?<page>\d{4})");
+        Regex regexAC = new Regex(@"(?<id>AC)(?<sutra>\d{4})[\-_](?<juan>\d{3})[\-_]p?(?<page>\d{4})");
 
         Regex regexCB = new Regex(@"(?<id>CB)(?<num>\d{5})");
         Regex regexSDRJ = new Regex(@"(?<id>(SD)|(RJ))\-(?<num>[A-F][0-9A-F]{3})");
